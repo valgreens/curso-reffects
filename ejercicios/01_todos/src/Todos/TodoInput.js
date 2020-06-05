@@ -1,7 +1,24 @@
 import React from 'react';
+import { dispatch } from 'reffects';
+import { subscribe } from 'reffects-store';
 
-export default function TodoInput() {
+function TodoInput({ inputText, inputChange, createTodo }) {
     return (
-        <input type="text" placeholder="Things I have to do..." />
+        <form onSubmit={createTodo}>
+            <input type="text" placeholder="Things I have to do..." value={inputText} onChange={inputChange} />
+        </form>
     );
 }
+
+
+export default subscribe(
+    TodoInput,
+    state => ({ inputText: state.inputText }),
+    {
+        inputChange: (event) => dispatch({id: 'inputChange', payload: event.target.value}),
+        createTodo: (event) => {
+            event.preventDefault();
+            dispatch('createTodo')
+        }
+    }
+)
